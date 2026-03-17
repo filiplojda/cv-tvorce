@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV Tvůrce — Profesionální životopis za minuty</title>
+  <meta name="description" content="Vytvoř profesionální životopis s pomocí AI. Zdarma náhled, stažení PDF za 99 Kč.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="light">
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-mark">CV</span>
+      <span class="logo-text">Tvůrce</span>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-btn" onclick="scrollToApp()">Vytvořit CV</button>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Přepnout tmavý režim">
+        <span class="theme-icon">◑</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">✦ AI-powered životopis</div>
+    <h1 class="hero-title">Životopis, který <em>zaujme</em><br>do 10 sekund</h1>
+    <p class="hero-sub">Vyplň formulář, AI vylepší formulace. Náhled zdarma — PDF za 99 Kč.</p>
+    <button class="hero-cta" onclick="scrollToApp()">Začít zdarma →</button>
+    <div class="hero-stats">
+      <div class="stat"><strong>5</strong> šablon</div>
+      <div class="stat-dot"></div>
+      <div class="stat">AI<strong> vylepšení</strong></div>
+      <div class="stat-dot"></div>
+      <div class="stat">PDF za <strong>99 Kč</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section class="app-section" id="app">
+  <div class="app-container">
+
+    <!-- LEFT: EDITOR -->
+    <div class="editor-panel" id="editor-panel">
+      <div class="editor-header">
+        <div class="editor-tabs">
+          <button class="etab active" onclick="switchEditorTab('form', this)">Formulář</button>
+          <button class="etab" onclick="switchEditorTab('upload', this)">Nahrát CV</button>
+          <button class="etab" onclick="switchEditorTab('templates', this)">Šablony</button>
+        </div>
+      </div>
+
+      <!-- FORM TAB -->
+      <div class="etab-content" id="etab-form">
+        <div class="form-scroll">
+
+          <div class="form-section">
+            <div class="fsec-label">Osobní údaje</div>
+            <div class="field-row">
+              <div class="field">
+                <label>Jméno</label>
+                <input id="f-name" type="text" placeholder="Jan" oninput="liveUpdate()">
+              </div>
+              <div class="field">
+                <label>Příjmení</label>
+                <input id="f-surname" type="text" placeholder="Novák" oninput="liveUpdate()">
+              </div>
+            </div>
+            <div class="field">
+              <label>Pracovní pozice</label>
+              <input id="f-jobtitle" type="text" placeholder="Senior marketér, UX Designer..." oninput="liveUpdate()">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>E-mail</label>
+                <input id="f-email" type="email" placeholder="jan@email.cz" oninput="liveUpdate()">
+              </div>
+              <div class="field">
+                <label>Telefon</label>
+                <input id="f-phone" type="tel" placeholder="+420 123 456 789" oninput="liveUpdate()">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Město</label>
+                <input id="f-city" placeholder="Praha" oninput="liveUpdate()">
+              </div>
+              <div class="field">
+                <label>LinkedIn / web</label>
+                <input id="f-linkedin" placeholder="linkedin.com/in/jan" oninput="liveUpdate()">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="fsec-label">Profesní shrnutí</div>
+            <div class="field">
+              <label>2–3 silné věty o sobě</label>
+              <textarea id="f-summary" rows="3" placeholder="Popis kariéry, hlavní kompetence, co přinášíš..." oninput="liveUpdate()"></textarea>
+            </div>
+            <button class="ai-pill" onclick="aiImprove('summary')">
+              <span class="ai-spinner" id="sp-summary"></span>
+              <span>✦ AI vylepší shrnutí</span>
+            </button>
+          </div>
+
+          <div class="form-section">
+            <div class="fsec-label">Pracovní zkušenosti</div>
+            <div id="exp-list"></div>
+            <button class="add-item-btn" onclick="addExp()">+ Přidat zkušenost</button>
+          </div>
+
+          <div class="form-section">
+            <div class="fsec-label">Vzdělání</div>
+            <div id="edu-list"></div>
+            <button class="add-item-btn" onclick="addEdu()">+ Přidat vzdělání</button>
+          </div>
+
+          <div class="form-section">
+            <div class="fsec-label">Jazyky</div>
+            <div id="lang-list"></div>
+            <button class="add-item-btn" onclick="addLang()">+ Přidat jazyk</button>
+          </div>
+
+          <div class="form-section">
+            <div class="fsec-label">Certifikáty & kurzy</div>
+            <div id="cert-list"></div>
+            <button class="add-item-btn" onclick="addCert()">+ Přidat certifikát</button>
+          </div>
+
+          <div class="form-section">
+            <div class="fsec-label">Dovednosti</div>
+            <div class="field">
+              <label>Oddělené čárkou</label>
+              <input id="f-skills" placeholder="MS Excel, komunikace, projektový management..." oninput="liveUpdate()">
+            </div>
+            <button class="ai-pill" onclick="aiImprove('skills')">
+              <span class="ai-spinner" id="sp-skills"></span>
+              <span>✦ AI doplní dovednosti</span>
+            </button>
+          </div>
+
+          <div class="form-section">
+            <button class="ai-full-btn" onclick="aiPolishAll()">
+              <span class="ai-spinner" id="sp-all"></span>
+              <span>✦ AI vylepší celé CV najednou</span>
+            </button>
+            <div class="ai-msg" id="ai-msg"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- UPLOAD TAB -->
+      <div class="etab-content hidden" id="etab-upload">
+        <div class="form-scroll">
+          <div class="upload-zone" onclick="document.getElementById('cv-file').click()">
+            <div class="upload-icon-wrap">📄</div>
+            <div class="upload-title">Nahraj existující CV</div>
+            <div class="upload-sub">Klikni nebo přetáhni .txt soubor</div>
+            <input type="file" id="cv-file" accept=".txt" onchange="handleFileUpload(this)" style="display:none">
+          </div>
+          <div class="form-section" style="margin-top:16px">
+            <div class="fsec-label">Nebo vlož text přímo</div>
+            <div class="field">
+              <textarea id="paste-cv" rows="10" placeholder="Vlož obsah svého CV — AI extrahuje informace, zkrátí přebytečný text a vylepší formulace..."></textarea>
+            </div>
+            <button class="ai-full-btn" onclick="aiParsePaste()">
+              <span class="ai-spinner" id="sp-paste"></span>
+              <span>✦ AI zpracuje a vylepší CV</span>
+            </button>
+            <div class="ai-msg" id="upload-msg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMPLATES TAB -->
+      <div class="etab-content hidden" id="etab-templates">
+        <div class="form-scroll">
+          <div class="tmpl-intro">Vyber styl životopisu</div>
+          <div class="tmpl-grid" id="tmpl-grid"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: PREVIEW -->
+    <div class="preview-panel">
+      <div class="preview-toolbar">
+        <span class="preview-label">Náhled</span>
+        <div class="preview-actions">
+          <button class="ptool-btn" onclick="aiPolishAll()">✦ AI vylepší</button>
+          <button class="ptool-btn pdf-btn" onclick="handlePdfDownload()">⬇ PDF — 99 Kč</button>
+        </div>
+      </div>
+      <div class="preview-wrap">
+        <div class="cv-sheet" id="cv-preview">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PDF PAYWALL MODAL -->
+<div class="modal-overlay hidden" id="paywall-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-icon">📄</div>
+    <h2 class="modal-title">Stáhnout PDF</h2>
+    <p class="modal-desc">Váš profesionální životopis připravený k odeslání.<br>Jednorázová platba, žádné předplatné.</p>
+    <div class="modal-price">99 Kč</div>
+    <button class="modal-pay-btn" onclick="mockPayment()">Zaplatit kartou →</button>
+    <p class="modal-fine">Přijímáme: Visa, Mastercard, Apple Pay, Google Pay<br><span style="font-size:11px;opacity:0.5">Platební brána bude brzy aktivována (Stripe)</span></p>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-logo">CV Tvůrce</div>
+    <div class="footer-copy">© 2025 · Vytvořeno s ♥ pro HR profesionály</div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
