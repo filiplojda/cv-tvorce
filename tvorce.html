@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tvůrce CV — Vytvoř profesionální životopis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="light builder-page">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="6" fill="#C8402A"/>
+        <path d="M7 8h14M7 14h10M7 20h12" stroke="#FAF8F3" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </a>
+    <nav class="header-nav">
+      <a class="nav-link" href="index.html">← Zpět na hlavní stránku</a>
+      <button class="theme-toggle" onclick="toggleTheme()">◑</button>
+    </nav>
+  </div>
+</header>
+
+<div class="builder-layout">
+  <!-- LEFT: EDITOR -->
+  <div class="editor-panel">
+    <div class="editor-header">
+      <div class="editor-tabs">
+        <button class="etab active" onclick="switchEditorTab('form', this)">Formulář</button>
+        <button class="etab" onclick="switchEditorTab('upload', this)">Nahrát CV</button>
+        <button class="etab" onclick="switchEditorTab('templates', this)">Šablony</button>
+        <button class="etab" onclick="switchEditorTab('design', this)">Design</button>
+      </div>
+    </div>
+
+    <!-- FORM TAB -->
+    <div class="etab-content" id="etab-form">
+      <div class="form-scroll">
+
+        <!-- PHOTO UPLOAD -->
+        <div class="form-section">
+          <div class="fsec-label">Profilová fotka <span class="fsec-opt">volitelné</span></div>
+          <div class="photo-upload-row">
+            <div class="photo-preview" id="photo-preview" onclick="document.getElementById('photo-input').click()">
+              <div class="photo-placeholder" id="photo-placeholder">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span>Přidat foto</span>
+              </div>
+              <img id="photo-img" style="display:none;width:72px;height:72px;border-radius:50%;object-fit:cover">
+            </div>
+            <div class="photo-info">
+              <p>Malá fotka v rohu CV. Doporučujeme profesionální portrét.</p>
+              <button class="photo-remove hidden" id="photo-remove" onclick="removePhoto()">× Odebrat fotku</button>
+            </div>
+            <input type="file" id="photo-input" accept="image/*" onchange="handlePhoto(this)" style="display:none">
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="fsec-label">Osobní údaje</div>
+          <div class="field-row">
+            <div class="field"><label>Jméno</label><input id="f-name" type="text" placeholder="Jan" oninput="liveUpdate()"></div>
+            <div class="field"><label>Příjmení</label><input id="f-surname" type="text" placeholder="Novák" oninput="liveUpdate()"></div>
+          </div>
+          <div class="field"><label>Pracovní pozice</label><input id="f-jobtitle" type="text" placeholder="Senior marketér, UX Designer..." oninput="liveUpdate()"></div>
+          <div class="field-row">
+            <div class="field"><label>E-mail</label><input id="f-email" type="email" placeholder="jan@email.cz" oninput="liveUpdate()"></div>
+            <div class="field"><label>Telefon</label><input id="f-phone" type="tel" placeholder="+420 123 456 789" oninput="liveUpdate()"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Město</label><input id="f-city" placeholder="Praha" oninput="liveUpdate()"></div>
+            <div class="field"><label>LinkedIn / web</label><input id="f-linkedin" placeholder="linkedin.com/in/jan" oninput="liveUpdate()"></div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="fsec-label">Profesní shrnutí</div>
+          <div class="field"><label>2–3 silné věty o sobě</label><textarea id="f-summary" rows="3" placeholder="Popis kariéry, hlavní kompetence, co přinášíš..." oninput="liveUpdate()"></textarea></div>
+          <button class="ai-pill" onclick="aiImprove('summary')">
+            <span class="ai-spinner" id="sp-summary"></span>
+            <span class="ai-btn-text">✦ AI vylepší shrnutí</span>
+          </button>
+        </div>
+
+        <div class="form-section">
+          <div class="fsec-label">Pracovní zkušenosti</div>
+          <div id="exp-list"></div>
+          <button class="add-item-btn" onclick="addExp()">+ Přidat zkušenost</button>
+        </div>
+
+        <div class="form-section">
+          <div class="fsec-label">Vzdělání</div>
+          <div id="edu-list"></div>
+          <button class="add-item-btn" onclick="addEdu()">+ Přidat vzdělání</button>
+        </div>
+
+        <div class="form-section">
+          <div class="fsec-label">Jazyky</div>
+          <div id="lang-list"></div>
+          <button class="add-item-btn" onclick="addLang()">+ Přidat jazyk</button>
+        </div>
+
+        <div class="form-section">
+          <div class="fsec-label">Certifikáty & kurzy</div>
+          <div id="cert-list"></div>
+          <button class="add-item-btn" onclick="addCert()">+ Přidat certifikát</button>
+        </div>
+
+        <div class="form-section">
+          <div class="fsec-label">Dovednosti</div>
+          <div class="field"><label>Oddělené čárkou</label><input id="f-skills" placeholder="MS Excel, komunikace, projektový management..." oninput="liveUpdate()"></div>
+          <button class="ai-pill" onclick="aiImprove('skills')">
+            <span class="ai-spinner" id="sp-skills"></span>
+            <span class="ai-btn-text">✦ AI doplní dovednosti</span>
+          </button>
+        </div>
+
+        <div class="form-section">
+          <button class="ai-full-btn" onclick="aiPolishAll()">
+            <span class="ai-spinner" id="sp-all"></span>
+            <span class="ai-btn-text">✦ AI vylepší celé CV najednou</span>
+          </button>
+          <div class="ai-msg" id="ai-msg"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- UPLOAD TAB -->
+    <div class="etab-content hidden" id="etab-upload">
+      <div class="form-scroll">
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('cv-file').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleDrop(event)">
+          <div class="upload-icon-wrap">📄</div>
+          <div class="upload-title">Nahraj existující CV</div>
+          <div class="upload-sub">PDF, DOCX nebo TXT — klikni nebo přetáhni</div>
+          <input type="file" id="cv-file" accept=".pdf,.docx,.doc,.txt,.rtf" onchange="handleFileUpload(this)" style="display:none">
+        </div>
+        <div class="upload-formats">
+          <span class="fmt-pill">PDF</span>
+          <span class="fmt-pill">DOCX</span>
+          <span class="fmt-pill">DOC</span>
+          <span class="fmt-pill">TXT</span>
+          <span class="fmt-pill">RTF</span>
+        </div>
+        <div class="form-section" style="margin-top:8px">
+          <div class="fsec-label">Nebo vlož text přímo</div>
+          <div class="field"><textarea id="paste-cv" rows="10" placeholder="Vlož obsah svého CV — AI extrahuje informace, zkrátí přebytečný text a vylepší formulace..."></textarea></div>
+          <button class="ai-full-btn" onclick="aiParsePaste()">
+            <span class="ai-spinner" id="sp-paste"></span>
+            <span class="ai-btn-text">✦ AI zpracuje a vylepší CV</span>
+          </button>
+          <div class="ai-msg" id="upload-msg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATES TAB -->
+    <div class="etab-content hidden" id="etab-templates">
+      <div class="form-scroll">
+        <div class="tmpl-intro">Vyber styl životopisu</div>
+        <div class="tmpl-grid" id="tmpl-grid"></div>
+      </div>
+    </div>
+
+    <!-- DESIGN TAB -->
+    <div class="etab-content hidden" id="etab-design">
+      <div class="form-scroll">
+        <div class="form-section">
+          <div class="fsec-label">Velikost písma</div>
+          <div class="font-size-row">
+            <button class="fs-btn" onclick="setFontSize('small')" id="fs-small">Malé</button>
+            <button class="fs-btn active" onclick="setFontSize('medium')" id="fs-medium">Střední</button>
+            <button class="fs-btn" onclick="setFontSize('large')" id="fs-large">Velké</button>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="fsec-label">Styl nadpisů</div>
+          <div class="heading-style-grid">
+            <button class="hs-btn active" onclick="setHeadingStyle('serif')" id="hs-serif">
+              <span style="font-family:'Playfair Display',serif;font-size:16px;font-style:italic">Serif</span>
+              <span class="hs-label">Klasický</span>
+            </button>
+            <button class="hs-btn" onclick="setHeadingStyle('sans')" id="hs-sans">
+              <span style="font-family:'Instrument Sans',sans-serif;font-size:15px;font-weight:600">Sans</span>
+              <span class="hs-label">Moderní</span>
+            </button>
+            <button class="hs-btn" onclick="setHeadingStyle('uppercase')" id="hs-uppercase">
+              <span style="font-family:'Instrument Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em">CAPS</span>
+              <span class="hs-label">Minimální</span>
+            </button>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="fsec-label">Hustota obsahu</div>
+          <div class="density-row">
+            <button class="fs-btn" onclick="setDensity('compact')" id="den-compact">Kompaktní</button>
+            <button class="fs-btn active" onclick="setDensity('normal')" id="den-normal">Normální</button>
+            <button class="fs-btn" onclick="setDensity('spacious')" id="den-spacious">Vzdušné</button>
+          </div>
+        </div>
+        <div class="form-section">
+          <div class="fsec-label">Barva akcentu</div>
+          <div class="color-grid">
+            <button class="color-btn active" onclick="setAccentColor('#C8402A','red')" id="col-red" style="background:#C8402A" title="Cihlová červená"></button>
+            <button class="color-btn" onclick="setAccentColor('#1860C4','blue')" id="col-blue" style="background:#1860C4" title="Modrá"></button>
+            <button class="color-btn" onclick="setAccentColor('#1D9E75','green')" id="col-green" style="background:#1D9E75" title="Zelená"></button>
+            <button class="color-btn" onclick="setAccentColor('#534AB7','purple')" id="col-purple" style="background:#534AB7" title="Fialová"></button>
+            <button class="color-btn" onclick="setAccentColor('#1A1814','black')" id="col-black" style="background:#1A1814" title="Černá"></button>
+            <button class="color-btn" onclick="setAccentColor('#B07D3A','gold')" id="col-gold" style="background:#B07D3A" title="Zlatá"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-toolbar">
+      <span class="preview-label">Náhled v reálném čase</span>
+      <div class="preview-actions">
+        <button class="ptool-btn" onclick="aiPolishAll()">
+          <span class="ai-spinner" id="sp-toolbar"></span>
+          ✦ AI vylepší
+        </button>
+        <button class="ptool-btn pdf-btn" onclick="handlePdfDownload()">⬇ PDF — 99 Kč</button>
+      </div>
+    </div>
+    <div class="preview-wrap">
+      <div class="cv-sheet t1" id="cv-preview"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PDF PAYWALL MODAL -->
+<div class="modal-overlay hidden" id="paywall-modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div style="margin-bottom:16px"><svg width="36" height="36" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#C8402A"/><path d="M7 8h14M7 14h10M7 20h12" stroke="#FAF8F3" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <h2 class="modal-title">Stáhnout PDF</h2>
+    <p class="modal-desc">Váš profesionální životopis připravený k odeslání. Jednorázová platba, žádné předplatné.</p>
+    <div class="modal-price">99 Kč</div>
+    <button class="modal-pay-btn" onclick="mockPayment()">Zaplatit kartou →</button>
+    <p class="modal-fine">Visa · Mastercard · Apple Pay · Google Pay<br><span>Platební brána bude brzy aktivována (Stripe)</span></p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
